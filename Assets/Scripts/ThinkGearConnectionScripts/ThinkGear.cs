@@ -87,14 +87,12 @@ public class ThinkGear : MonoBehaviour
 
     private void OnStateChangeCall(string message)
     {
-        Debug.Log($"State: {message}");
         State state = JsonConvert.DeserializeObject<State>(message);
         UpdateStateChangeEvent?.Invoke(state);
     }
 
     private void OnSignalChangeCall(string message)
     {
-        Debug.Log($"Signal: {message}");
         Signal signal = JsonConvert.DeserializeObject<Signal>(message);
         UpdateSignalChangeEvent?.Invoke(signal);
     }
