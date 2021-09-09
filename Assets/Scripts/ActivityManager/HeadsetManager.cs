@@ -11,10 +11,8 @@ public class HeadsetManager : MonoBehaviour
     public static event IntValueDelegate UpdatePoorSignalEvent;
     public static event IntValueDelegate UpdateAttentionEvent;
     public static event IntValueDelegate UpdateMeditationEvent;
-    // Not Used
-    //public static event ArrayListValueDelegate UpdateRawDataEvent;
-    //public static event WaveValueDelegate UpdateFullDataWaveEvent;
     #endregion Events
+
     public static int Attention
     {
         get
@@ -64,7 +62,7 @@ public class HeadsetManager : MonoBehaviour
 
     private void Awake()
     {
-        thinkGear = GameObject.Find("ThinkGear").GetComponent<ThinkGear>();
+        thinkGear = GetComponent<ThinkGear>();
         if(instance != null)
         {
             Debug.LogError("Multiple Headset Managers. First on " + instance.name + ", second on " + name);
