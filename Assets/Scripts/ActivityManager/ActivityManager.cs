@@ -14,8 +14,6 @@ public abstract class ActivityManager : MonoBehaviour
 
     protected abstract void UpdateBehaviour(bool state);
     
-
-
     private void Update()
     {
         UpdateBehaviour(HasReachedProtocol);

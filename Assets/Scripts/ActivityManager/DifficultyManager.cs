@@ -5,7 +5,6 @@ using System;
 
 public class DifficultyManager : MonoBehaviour
 {
-    public const string PlayerPref_LastSessionAverage = "LastSessionAverage";
     public static DifficultyManager instance;
 
     [Header("Dynamic Difficulty Options")]
@@ -33,15 +32,12 @@ public class DifficultyManager : MonoBehaviour
             instance = this;
             dynamicDataset = new List<int>();
             generatedDifficulties = new List<int>();
-            //Line added
-            ActivityStart();
         }
     }
 
     private static List<int> dynamicDataset;
     private static List<int> generatedDifficulties;
     private Coroutine DynamicUpdateCor;
-    private DifficultyMode mode;
     private string userPrefsKey;
     private int difficulty;
     //private int SessionAverage;
@@ -83,19 +79,19 @@ public class DifficultyManager : MonoBehaviour
     /// <summary>
     /// Prepares the manager for dynamically updating the difficulty level
     /// </summary>
-    private void ActivityStart()
+    public void ActivityStart()
     {
-        // TODO: This line should be changed when we add the option to select Difficulty
-        Mode = DifficultyMode.Dynamic;
         if (Mode == DifficultyMode.Dynamic)
         {
             StartDynamicUpdates();
         }
+        else
+            difficulty = PlayerPrefs.GetInt("requiredSignal",30);
     }
     /// <summary>
     /// Stops the manager from tracking and setting difficulty
     /// </summary>
-    private void ActivityEnded()
+    public void ActivityEnded()
     {
         StopDynamicUpdates();
     }
@@ -109,7 +105,7 @@ public class DifficultyManager : MonoBehaviour
         generatedDifficulties.Add(difficulty);
         HeadsetManager.UpdateAttentionEvent += AddTodynamicDataset;
 
-        //DynamicUpdateCor = StartCoroutine(CountToDifficultyGeneration());
+        DynamicUpdateCor = StartCoroutine(CountToDifficultyRegeneration());
     }
 
     //Pauses data recording while activity is paused to prevent unnecessary data.

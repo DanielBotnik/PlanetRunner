@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Models.HeadsetModels;
-using System.Collections;
+﻿using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -76,7 +75,6 @@ public delegate void FloatValueDelegate(float value);
 public delegate void BoolValueDelegate(bool value);
 public delegate void tringMessageDelegate(string message);
 public delegate void ArrayListValueDelegate(ArrayList value);
-public delegate void WaveValueDelegate(FullDataWave wave);
 public delegate void ProtocolChanged(ProtocolType protocol);
 #endregion
 

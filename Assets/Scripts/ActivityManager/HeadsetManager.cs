@@ -49,7 +49,13 @@ public class HeadsetManager : MonoBehaviour
     {
         get
         {
-            return Mathf.FloorToInt(((float)Attention + Meditation) / 2);
+            switch (GeneralDataManager.ActiveProtocol)
+            {
+                case ProtocolType.ATTENTION: { return Attention; }
+                case ProtocolType.MEDITATION: { return Meditation; }
+                case ProtocolType.PEAK: { return Mathf.FloorToInt(((float)Attention + Meditation) / 2); }
+                default: return Attention;
+            }
         }
     }
 
@@ -75,18 +81,11 @@ public class HeadsetManager : MonoBehaviour
         }
         instance = this;
 
-        HeadsetConnected += OnConnectedHeadset;
-        HeadsetDisconnected += OnDisconnectedHeadset;
-        UpdatePoorSignalEvent += InvokePoorSignalEvent;
-        UpdateAttentionEvent += InvokeAttentionEvent;
-        UpdateMeditationEvent += InvokeMeditationEvent;
-
-        thinkGear.UpdateDisconnectedStateEvent += () => { HeadsetDisconnected(); thinkGear.StopMonitoring(); };
-        thinkGear.UpdateConnectedStateEvent += () => { HeadsetConnected(); thinkGear.StartMonitoring(); };
-        thinkGear.UpdatePoorSignalEvent += (int value) => { UpdatePoorSignalEvent(value); };
-        thinkGear.UpdateAttentionEvent += (int value) => { UpdateAttentionEvent(value); };
-        thinkGear.UpdateMeditationEvent += (int value) => { UpdateMeditationEvent(value); };
-
+        thinkGear.UpdateDisconnectedStateEvent += OnDisconnectedHeadset;
+        thinkGear.UpdateConnectedStateEvent += OnConnectedHeadset;
+        thinkGear.UpdatePoorSignalEvent += InvokePoorSignalEvent;
+        thinkGear.UpdateAttentionEvent += InvokeAttentionEvent;
+        thinkGear.UpdateMeditationEvent += InvokeMeditationEvent;
     }
 
 
@@ -159,26 +158,36 @@ public class HeadsetManager : MonoBehaviour
                 Debug.Log("DEVICE CONNECTED");
         }
         Debug.Log("Signal Value: " + poorSignalValue);
+        UpdatePoorSignalEvent?.Invoke(value);
     }
 
     private void InvokeAttentionEvent(int value)
     {
         if (!IsConnected) { attentionValue = -1; return; }
         attentionValue = value;
+        UpdateAttentionEvent?.Invoke(value);
     }
 
     private void InvokeMeditationEvent(int value)
     {
         if (!IsConnected) { meditationValue = -1; return; }
         meditationValue = value;
+        UpdateMeditationEvent?.Invoke(value);
     }
 
     private void OnConnectedHeadset()
     {
         isConnected = true;
+        thinkGear.StartMonitoring();
+        HeadsetConnected?.Invoke();
     }
     private void OnDisconnectedHeadset()
     {
         isConnected = false;
+        InvokeAttentionEvent(-1);
+        InvokeMeditationEvent(-1);
+        thinkGear.StopMonitoring();
+        HeadsetDisconnected?.Invoke();
     }
+
 }
